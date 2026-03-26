@@ -137,9 +137,10 @@ function Library:AddCorner(Instance, Radius)
     
     local Corner = Instance:FindFirstChildOfClass('UICorner');
     if not Corner then
-        Corner = Instance.new('UICorner');
-        Corner.CornerRadius = UDim.new(0, Radius or 4);
-        Corner.Parent = Instance;
+        Corner = Library:Create('UICorner', {
+            CornerRadius = UDim.new(0, Radius or 4);
+            Parent = Instance;
+        });
     end;
     return Corner;
 end;
