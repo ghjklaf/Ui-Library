@@ -132,6 +132,18 @@ function Library:Create(Class, Properties)
     return _Instance;
 end;
 
+function Library:AddCorner(Instance, Radius)
+    if not Instance:IsA('GuiObject') then return end;
+    
+    local Corner = Instance:FindFirstChildOfClass('UICorner');
+    if not Corner then
+        Corner = Instance.new('UICorner');
+        Corner.CornerRadius = UDim.new(0, Radius or 4);
+        Corner.Parent = Instance;
+    end;
+    return Corner;
+end;
+
 function Library:ApplyTextStroke(Inst)
     Inst.TextStrokeTransparency = 1;
 
@@ -1460,6 +1472,8 @@ do
                 ZIndex = 5;
             });
 
+            Library:AddCorner(Outer, 4);
+
             local Inner = Library:Create('Frame', {
                 BackgroundColor3 = Library.MainColor;
                 BorderColor3 = Library.OutlineColor;
@@ -1468,6 +1482,8 @@ do
                 ZIndex = 6;
                 Parent = Outer;
             });
+
+            Library:AddCorner(Inner, 3);
 
             local IconOffset = 0;
             if Button.Icon then
@@ -1877,6 +1893,8 @@ do
             Parent = Container;
         });
 
+        Library:AddCorner(ToggleOuter, 3);
+
         Library:AddToRegistry(ToggleOuter, {
             BorderColor3 = 'Black';
         });
@@ -1889,6 +1907,8 @@ do
             ZIndex = 6;
             Parent = ToggleOuter;
         });
+
+        Library:AddCorner(ToggleInner, 2);
 
         Library:AddToRegistry(ToggleInner, {
             BackgroundColor3 = 'MainColor';
@@ -2047,6 +2067,8 @@ do
             Parent = Container;
         });
 
+        Library:AddCorner(SliderOuter, 4);
+
         Library:AddToRegistry(SliderOuter, {
             BorderColor3 = 'Black';
         });
@@ -2060,6 +2082,8 @@ do
             Parent = SliderOuter;
         });
 
+        Library:AddCorner(SliderInner, 3);
+
         Library:AddToRegistry(SliderInner, {
             BackgroundColor3 = 'MainColor';
             BorderColor3 = 'OutlineColor';
@@ -2072,6 +2096,8 @@ do
             ZIndex = 7;
             Parent = SliderInner;
         });
+
+        Library:AddCorner(Fill, 3);
 
         Library:AddToRegistry(Fill, {
             BackgroundColor3 = 'AccentColor';
@@ -3023,6 +3049,8 @@ function Library:CreateWindow(...)
         Parent = ScreenGui;
     });
 
+    Library:AddCorner(Outer, 6);
+
     Library:MakeDraggable(Outer, 25);
 
     local Inner = Library:Create('Frame', {
@@ -3034,6 +3062,8 @@ function Library:CreateWindow(...)
         ZIndex = 1;
         Parent = Outer;
     });
+
+    Library:AddCorner(Inner, 5);
 
     Library:AddToRegistry(Inner, {
         BackgroundColor3 = 'MainColor';
@@ -3262,6 +3292,8 @@ function Library:CreateWindow(...)
                 Parent = Info.Side == 1 and LeftSide or RightSide;
             });
 
+            Library:AddCorner(BoxOuter, 6);
+
             Library:AddToRegistry(BoxOuter, {
                 BackgroundColor3 = 'BackgroundColor';
                 BorderColor3 = 'OutlineColor';
@@ -3270,12 +3302,13 @@ function Library:CreateWindow(...)
             local BoxInner = Library:Create('Frame', {
                 BackgroundColor3 = Library.BackgroundColor;
                 BorderColor3 = Color3.new(0, 0, 0);
-                -- BorderMode = Enum.BorderMode.Inset;
                 Size = UDim2.new(1, -2, 1, -2);
                 Position = UDim2.new(0, 1, 0, 1);
                 ZIndex = 4;
                 Parent = BoxOuter;
             });
+
+            Library:AddCorner(BoxInner, 5);
 
             Library:AddToRegistry(BoxInner, {
                 BackgroundColor3 = 'BackgroundColor';
