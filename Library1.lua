@@ -1104,13 +1104,45 @@ do
             Parent = ModeSelectInner;
         });
 
+        local ContainerFrame = Library:Create('Frame', {
+            BackgroundColor3 = Library.MainColor;
+            BorderColor3 = Library.OutlineColor;
+            Size = UDim2.new(1, -4, 0, 20);
+            Visible = false;
+            ZIndex = 109;
+            Parent = Library.KeybindContainer;
+        });
+
+        Library:AddCorner(ContainerFrame, 4);
+
+        Library:AddToRegistry(ContainerFrame, {
+            BackgroundColor3 = 'MainColor';
+            BorderColor3 = 'OutlineColor';
+        }, true);
+
+        local StatusIndicator = Library:Create('Frame', {
+            BackgroundColor3 = Library.FontColor;
+            BorderSizePixel = 0;
+            Position = UDim2.new(0, 4, 0.5, -3);
+            Size = UDim2.new(0, 6, 0, 6);
+            ZIndex = 111;
+            Parent = ContainerFrame;
+        });
+
+        Library:AddCorner(StatusIndicator, 3);
+
+        Library:AddToRegistry(StatusIndicator, {
+            BackgroundColor3 = 'FontColor';
+        }, true);
+
         local ContainerLabel = Library:CreateLabel({
             TextXAlignment = Enum.TextXAlignment.Left;
-            Size = UDim2.new(1, 0, 0, 18);
+            Position = UDim2.new(0, 14, 0, 0);
+            Size = UDim2.new(1, -14, 1, 0);
             TextSize = 13;
-            Visible = false;
+            Visible = true;
             ZIndex = 110;
-            Parent = Library.KeybindContainer;
+            Parent = ContainerFrame;
         },  true);
 
         local Modes = Info.Modes or { 'Always', 'Toggle', 'Hold' };
@@ -1168,27 +1200,74 @@ do
             end;
 
             local State = KeyPicker:GetState();
+            local WasVisible = ContainerFrame.Visible;
 
             ContainerLabel.Text = string.format('[%s] %s (%s)', KeyPicker.Value, Info.Text, KeyPicker.Mode);
 
-            ContainerLabel.Visible = true;
-            ContainerLabel.TextColor3 = State and Library.AccentColor or Library.FontColor;
-
-            Library.RegistryMap[ContainerLabel].Properties.TextColor3 = State and 'AccentColor' or 'FontColor';
+            ContainerFrame.Visible = true;
+            
+            if not WasVisible then
+                ContainerFrame.BackgroundTransparency = 1;
+                ContainerLabel.TextTransparency = 1;
+                StatusIndicator.BackgroundTransparency = 1;
+                
+                TweenService:Create(ContainerFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    BackgroundTransparency = 0
+                }):Play();
+                
+                TweenService:Create(ContainerLabel, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    TextTransparency = 0
+                }):Play();
+                
+                TweenService:Create(StatusIndicator, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    BackgroundTransparency = 0
+                }):Play();
+            end;
+            
+            if State then
+                ContainerLabel.TextColor3 = Library.AccentColor;
+                Library.RegistryMap[ContainerLabel].Properties.TextColor3 = 'AccentColor';
+                
+                TweenService:Create(StatusIndicator, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    BackgroundColor3 = Library.AccentColor
+                }):Play();
+                
+                Library.RegistryMap[StatusIndicator].Properties.BackgroundColor3 = 'AccentColor';
+                
+                ContainerFrame.BackgroundColor3 = Library:GetDarkerColor(Library.MainColor);
+                Library.RegistryMap[ContainerFrame].Properties.BackgroundColor3 = function()
+                    return Library:GetDarkerColor(Library.MainColor);
+                end;
+            else
+                ContainerLabel.TextColor3 = Library.FontColor;
+                Library.RegistryMap[ContainerLabel].Properties.TextColor3 = 'FontColor';
+                
+                TweenService:Create(StatusIndicator, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+                }):Play();
+                
+                Library.RegistryMap[StatusIndicator].Properties.BackgroundColor3 = function()
+                    return Color3.fromRGB(100, 100, 100);
+                end;
+                
+                ContainerFrame.BackgroundColor3 = Library.MainColor;
+                Library.RegistryMap[ContainerFrame].Properties.BackgroundColor3 = 'MainColor';
+            end;
 
             local YSize = 0
             local XSize = 0
 
-            for _, Label in next, Library.KeybindContainer:GetChildren() do
-                if Label:IsA('TextLabel') and Label.Visible then
-                    YSize = YSize + 18;
-                    if (Label.TextBounds.X > XSize) then
-                        XSize = Label.TextBounds.X
-                    end
+            for _, Frame in next, Library.KeybindContainer:GetChildren() do
+                if Frame:IsA('Frame') and Frame.Visible then
+                    YSize = YSize + 22;
+                    local Label = Frame:FindFirstChildOfClass('TextLabel');
+                    if Label and Label.TextBounds.X > XSize then
+                        XSize = Label.TextBounds.X;
+                    end;
                 end;
             end;
 
-            Library.KeybindFrame.Size = UDim2.new(0, math.max(XSize + 10, 210), 0, YSize + 23)
+            Library.KeybindFrame.Size = UDim2.new(0, math.max(XSize + 20, 210), 0, YSize + 23)
         end;
 
         function KeyPicker:GetState()
