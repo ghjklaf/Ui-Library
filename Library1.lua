@@ -1356,19 +1356,43 @@ do
         local Groupbox = self;
         local Container = Groupbox.Container;
 
-        local TextLabel = Library:CreateLabel({
+        local LabelFrame = Library:Create('Frame', {
+            BackgroundTransparency = 1;
             Size = UDim2.new(1, -4, 0, 15);
-            TextSize = 14;
-            Text = Text;
-            TextWrapped = DoesWrap or false,
-            TextXAlignment = Enum.TextXAlignment.Left;
             ZIndex = 5;
             Parent = Container;
         });
 
+        local IconOffset = 0;
+        if type(Text) == 'table' and Text.Icon then
+            IconOffset = 18;
+            local Icon = Library:Create('ImageLabel', {
+                BackgroundTransparency = 1;
+                Size = UDim2.new(0, 14, 0, 14);
+                Position = UDim2.new(0, 0, 0, 0);
+                Image = Text.Icon;
+                ZIndex = 6;
+                Parent = LabelFrame;
+            });
+        end
+
+        local ActualText = type(Text) == 'table' and Text.Text or Text;
+
+        local TextLabel = Library:CreateLabel({
+            Size = UDim2.new(1, -IconOffset, 0, 15);
+            Position = UDim2.new(0, IconOffset, 0, 0);
+            TextSize = 14;
+            Text = ActualText;
+            TextWrapped = DoesWrap or false,
+            TextXAlignment = Enum.TextXAlignment.Left;
+            ZIndex = 5;
+            Parent = LabelFrame;
+        });
+
         if DoesWrap then
-            local Y = select(2, Library:GetTextBounds(Text, Library.Font, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
-            TextLabel.Size = UDim2.new(1, -4, 0, Y)
+            local Y = select(2, Library:GetTextBounds(ActualText, Library.Font, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
+            TextLabel.Size = UDim2.new(1, -IconOffset, 0, Y)
+            LabelFrame.Size = UDim2.new(1, -4, 0, Y)
         else
             Library:Create('UIListLayout', {
                 Padding = UDim.new(0, 4);
@@ -1387,7 +1411,8 @@ do
 
             if DoesWrap then
                 local Y = select(2, Library:GetTextBounds(Text, Library.Font, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
-                TextLabel.Size = UDim2.new(1, -4, 0, Y)
+                TextLabel.Size = UDim2.new(1, -IconOffset, 0, Y)
+                LabelFrame.Size = UDim2.new(1, -4, 0, Y)
             end
 
             Groupbox:Resize();
@@ -1413,6 +1438,7 @@ do
                 Obj.Func = Props.Func
                 Obj.DoubleClick = Props.DoubleClick
                 Obj.Tooltip = Props.Tooltip
+                Obj.Icon = Props.Icon
             else
                 Obj.Text = select(1, ...)
                 Obj.Func = select(2, ...)
@@ -1443,8 +1469,22 @@ do
                 Parent = Outer;
             });
 
+            local IconOffset = 0;
+            if Button.Icon then
+                IconOffset = 18;
+                local Icon = Library:Create('ImageLabel', {
+                    BackgroundTransparency = 1;
+                    Size = UDim2.new(0, 14, 0, 14);
+                    Position = UDim2.new(0, 3, 0.5, -7);
+                    Image = Button.Icon;
+                    ZIndex = 7;
+                    Parent = Inner;
+                });
+            end
+
             local Label = Library:CreateLabel({
-                Size = UDim2.new(1, 0, 1, 0);
+                Size = UDim2.new(1, -IconOffset, 1, 0);
+                Position = UDim2.new(0, IconOffset, 0, 0);
                 TextSize = 14;
                 Text = Button.Text;
                 ZIndex = 6;
@@ -1855,9 +1895,22 @@ do
             BorderColor3 = 'OutlineColor';
         });
 
+        local IconOffset = 0;
+        if Info.Icon then
+            IconOffset = 18;
+            local Icon = Library:Create('ImageLabel', {
+                BackgroundTransparency = 1;
+                Size = UDim2.new(0, 14, 0, 14);
+                Position = UDim2.new(1, 6, 0, 0);
+                Image = Info.Icon;
+                ZIndex = 7;
+                Parent = ToggleInner;
+            });
+        end
+
         local ToggleLabel = Library:CreateLabel({
-            Size = UDim2.new(0, 216, 1, 0);
-            Position = UDim2.new(1, 6, 0, 0);
+            Size = UDim2.new(0, 216 - IconOffset, 1, 0);
+            Position = UDim2.new(1, 6 + IconOffset, 0, 0);
             TextSize = 14;
             Text = Info.Text;
             TextXAlignment = Enum.TextXAlignment.Left;
@@ -3064,12 +3117,16 @@ function Library:CreateWindow(...)
             Tabboxes = {};
         };
 
-        local TabButtonWidth = Library:GetTextBounds(Name, Library.Font, 16);
+        local TabName = type(Name) == 'table' and Name.Name or Name;
+        local TabIcon = type(Name) == 'table' and Name.Icon or nil;
+        
+        local IconOffset = TabIcon and 18 or 0;
+        local TabButtonWidth = Library:GetTextBounds(TabName, Library.Font, 16);
 
         local TabButton = Library:Create('Frame', {
             BackgroundColor3 = Library.BackgroundColor;
             BorderColor3 = Library.OutlineColor;
-            Size = UDim2.new(0, TabButtonWidth + 8 + 4, 1, 0);
+            Size = UDim2.new(0, TabButtonWidth + 8 + 4 + IconOffset, 1, 0);
             ZIndex = 1;
             Parent = TabArea;
         });
@@ -3079,10 +3136,21 @@ function Library:CreateWindow(...)
             BorderColor3 = 'OutlineColor';
         });
 
+        if TabIcon then
+            local Icon = Library:Create('ImageLabel', {
+                BackgroundTransparency = 1;
+                Size = UDim2.new(0, 14, 0, 14);
+                Position = UDim2.new(0, 4, 0.5, -7);
+                Image = TabIcon;
+                ZIndex = 2;
+                Parent = TabButton;
+            });
+        end
+
         local TabButtonLabel = Library:CreateLabel({
-            Position = UDim2.new(0, 0, 0, 0);
-            Size = UDim2.new(1, 0, 1, -1);
-            Text = Name;
+            Position = UDim2.new(0, IconOffset, 0, 0);
+            Size = UDim2.new(1, -IconOffset, 1, -1);
+            Text = TabName;
             ZIndex = 1;
             Parent = TabButton;
         });
@@ -3490,7 +3558,7 @@ function Library:CreateWindow(...)
             Tab:ShowTab();
         end;
 
-        Window.Tabs[Name] = Tab;
+        Window.Tabs[TabName] = Tab;
         return Tab;
     end;
 
@@ -3633,4 +3701,3 @@ Players.PlayerAdded:Connect(OnPlayerChange);
 Players.PlayerRemoving:Connect(OnPlayerChange);
 
 getgenv().Library = Library
-return Library
