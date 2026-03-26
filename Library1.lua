@@ -481,6 +481,8 @@ do
             Parent = ScreenGui,
         });
 
+        Library:AddCorner(PickerFrameOuter, 6);
+
         DisplayFrame:GetPropertyChangedSignal('AbsolutePosition'):Connect(function()
             PickerFrameOuter.Position = UDim2.fromOffset(DisplayFrame.AbsolutePosition.X, DisplayFrame.AbsolutePosition.Y + 18);
         end)
@@ -493,6 +495,8 @@ do
             ZIndex = 16;
             Parent = PickerFrameOuter;
         });
+
+        Library:AddCorner(PickerFrameInner, 5);
 
         local Highlight = Library:Create('Frame', {
             BackgroundColor3 = Library.AccentColor;
@@ -1719,6 +1723,8 @@ do
             Parent = Container;
         });
 
+        Library:AddCorner(TextBoxOuter, 4);
+
         local TextBoxInner = Library:Create('Frame', {
             BackgroundColor3 = Library.MainColor;
             BorderColor3 = Library.OutlineColor;
@@ -1727,6 +1733,8 @@ do
             ZIndex = 6;
             Parent = TextBoxOuter;
         });
+
+        Library:AddCorner(TextBoxInner, 3);
 
         Library:AddToRegistry(TextBoxInner, {
             BackgroundColor3 = 'MainColor';
@@ -2286,6 +2294,8 @@ do
             Parent = Container;
         });
 
+        Library:AddCorner(DropdownOuter, 4);
+
         Library:AddToRegistry(DropdownOuter, {
             BorderColor3 = 'Black';
         });
@@ -2298,6 +2308,8 @@ do
             ZIndex = 6;
             Parent = DropdownOuter;
         });
+
+        Library:AddCorner(DropdownInner, 3);
 
         Library:AddToRegistry(DropdownInner, {
             BackgroundColor3 = 'MainColor';
@@ -2353,6 +2365,8 @@ do
             Parent = ScreenGui;
         });
 
+        Library:AddCorner(ListOuter, 6);
+
         local function RecalculateListPosition()
             ListOuter.Position = UDim2.fromOffset(DropdownOuter.AbsolutePosition.X, DropdownOuter.AbsolutePosition.Y + DropdownOuter.Size.Y.Offset + 1);
         end;
@@ -2375,6 +2389,8 @@ do
             ZIndex = 21;
             Parent = ListOuter;
         });
+
+        Library:AddCorner(ListInner, 5);
 
         Library:AddToRegistry(ListInner, {
             BackgroundColor3 = 'MainColor';
@@ -2784,6 +2800,8 @@ do
         Parent = ScreenGui;
     });
 
+    Library:AddCorner(WatermarkOuter, 6);
+
     local WatermarkInner = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor;
         BorderColor3 = Library.AccentColor;
@@ -2792,6 +2810,8 @@ do
         ZIndex = 201;
         Parent = WatermarkOuter;
     });
+
+    Library:AddCorner(WatermarkInner, 5);
 
     Library:AddToRegistry(WatermarkInner, {
         BorderColor3 = 'AccentColor';
@@ -2849,6 +2869,8 @@ do
         Parent = ScreenGui;
     });
 
+    Library:AddCorner(KeybindOuter, 6);
+
     local KeybindInner = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor;
         BorderColor3 = Library.OutlineColor;
@@ -2857,6 +2879,8 @@ do
         ZIndex = 101;
         Parent = KeybindOuter;
     });
+
+    Library:AddCorner(KeybindInner, 5);
 
     Library:AddToRegistry(KeybindInner, {
         BackgroundColor3 = 'MainColor';
@@ -2935,6 +2959,8 @@ function Library:Notify(Text, Time)
         Parent = Library.NotificationArea;
     });
 
+    Library:AddCorner(NotifyOuter, 6);
+
     local NotifyInner = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor;
         BorderColor3 = Library.OutlineColor;
@@ -2943,6 +2969,8 @@ function Library:Notify(Text, Time)
         ZIndex = 101;
         Parent = NotifyOuter;
     });
+
+    Library:AddCorner(NotifyInner, 5);
 
     Library:AddToRegistry(NotifyInner, {
         BackgroundColor3 = 'MainColor';
@@ -3162,6 +3190,8 @@ function Library:CreateWindow(...)
             Parent = TabArea;
         });
 
+        Library:AddCorner(TabButton, 4);
+
         Library:AddToRegistry(TabButton, {
             BackgroundColor3 = 'BackgroundColor';
             BorderColor3 = 'OutlineColor';
@@ -3190,11 +3220,13 @@ function Library:CreateWindow(...)
             BackgroundColor3 = Library.MainColor;
             BorderSizePixel = 0;
             Position = UDim2.new(0, 0, 1, 0);
-            Size = UDim2.new(1, 0, 0, 1);
+            Size = UDim2.new(1, 0, 0, 2);
             BackgroundTransparency = 1;
             ZIndex = 3;
             Parent = TabButton;
         });
+
+        Library:AddCorner(Blocker, 4);
 
         Library:AddToRegistry(Blocker, {
             BackgroundColor3 = 'MainColor';
